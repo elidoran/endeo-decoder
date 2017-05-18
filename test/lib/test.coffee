@@ -1,5 +1,4 @@
 assert = require 'assert'
-flatten = require '@flatten/array'
 
 B = require '@endeo/bytes'
 
