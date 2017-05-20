@@ -2,14 +2,7 @@ assert = require 'assert'
 B = require '@endeo/bytes'
 {Input} = require '@endeo/input'
 
-module.exports = (direct, callbackNodes, nextNodes, bytes, controlType = 'next', values) ->
-
-  # get the inner node and the direct callback
-  callback = null
-  node = direct ((_, cb) -> callback = cb)
-
-  # provide the callback nodes to the callback so it's ready to run.
-  callback.apply null, callbackNodes
+module.exports = (node, neededNodes, nextNodes, bytes, controlType = 'next', values) ->
 
   # setup context with input buffer with the desired byte
   context = Object.create Object.assign {
@@ -44,7 +37,7 @@ module.exports = (direct, callbackNodes, nextNodes, bytes, controlType = 'next',
     failed: false
 
   # run it with context
-  node.call context, control
+  node.call context, control, neededNodes
 
   switch controlType
     when 'next'
