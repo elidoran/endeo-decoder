@@ -18,10 +18,10 @@ module.exports = (control, N) ->
     # check range before switch
     byte = @byte()
 
-    if byte < @B.SPECIAL         # 0 < B.SPECIAL are ID's
+    if byte < @B.SPECIAL          # 0 < B.SPECIAL are ID's
       # TODO: could get the "spec" here and then go to 'special' ...
-      @integer = byte            # remember the id
-      control.next N.specialStart  # go direct to the special handler
+      @integer = byte             # remember the id
+      control.next N.specialStart # go direct to the special handler
 
     # now check exact matches
     else switch byte
