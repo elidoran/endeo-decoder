@@ -2,25 +2,25 @@ assert = require 'assert'
 
 B = require '@endeo/bytes'
 
-node = require '../../lib/direct-nodes/special.coffee'
+node = require '../../lib/complex-nodes/special.coffee'
 
-testNode = require '../helpers/direct-node-test.coffee'
+testNode = require '../helpers/complex-node-test.coffee'
 
 describe 'test special', ->
 
-  callbackNodes = [
-    start = {}
-    value = {}
-    int   = {}
-    special  = {}
-    defaults = {}
-    specialT = {}
-  ]
+  N = neededNodes =
+    start: {}
+    value: {}
+    int  : {}
+    special : {}
+    defaults: {}
+    specialT: {}
+
 
   it 'should wait for bytes', ->
 
     values = specIndex: 0, spec: array: ['non-zero-length']
-    testNode node, callbackNodes, [], [], 'wait', values
+    testNode node, neededNodes, [], [], 'wait', values
 
 
   it 'should assign the value and wait', ->
@@ -32,7 +32,7 @@ describe 'test special', ->
       spec: array: [1, {key}, 3]
       specIndex: 1
       specObject: {}
-    context = testNode node, callbackNodes, [], [], 'wait', values
+    context = testNode node, neededNodes, [], [], 'wait', values
     assert.equal context.value, null
     assert.equal context.specObject[key], val
     assert.equal context.specIndex, 2
@@ -46,7 +46,7 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    context = testNode node, callbackNodes, [specialT], [], 'next', values
+    context = testNode node, neededNodes, [N.specialT], [], 'next', values
     assert.equal context.value, spec
 
 
@@ -58,7 +58,7 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    context = testNode node, callbackNodes, [], [B.SUB_TERMINATOR], 'next', values
+    context = testNode node, neededNodes, [], [B.SUB_TERMINATOR], 'next', values
     assert.equal context.value, spec
     assert.equal context.index, 1
 
@@ -71,7 +71,7 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    context = testNode node, callbackNodes, [start], [B.TERMINATOR], 'next', values
+    context = testNode node, neededNodes, [N.start], [B.TERMINATOR], 'next', values
     assert.equal context.value, spec
     assert.equal context.index, 1
 
@@ -84,7 +84,7 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    context = testNode node, callbackNodes, [], [B.STRING], 'fail', values
+    context = testNode node, neededNodes, [], [B.STRING], 'fail', values
     assert.equal context.value, spec
     assert.equal context.index, 0 # back()'d
 
@@ -97,8 +97,8 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    nextNodes = [value, special]
-    context = testNode node, callbackNodes, nextNodes, [B.STRING], 'next', values
+    nextNodes = [ N.value, N.special ]
+    context = testNode node, neededNodes, nextNodes, [B.STRING], 'next', values
     assert.equal context.index, 0
     assert.equal context.specIndex, 0
 
@@ -112,7 +112,7 @@ describe 'test special', ->
       value: null
       popSpec: -> spec
     nextNodes = []
-    context = testNode node, callbackNodes, nextNodes, [B.DEFAULT], 'wait', values
+    context = testNode node, neededNodes, nextNodes, [B.DEFAULT], 'wait', values
     assert.equal context.index, 1
     assert.equal context.specIndex, 1
 
@@ -127,7 +127,7 @@ describe 'test special', ->
       popSpec: -> spec
     nextNodes = []
     bytes = [B.DEFAULT,B.DEFAULT,B.DEFAULT]
-    context = testNode node, callbackNodes, nextNodes, bytes, 'wait', values
+    context = testNode node, neededNodes, nextNodes, bytes, 'wait', values
     assert.equal context.index, 3
     assert.equal context.specIndex, 3
 
@@ -142,7 +142,7 @@ describe 'test special', ->
       popSpec: -> spec
     nextNodes = []
     bytes = [B.DEFAULT5]
-    context = testNode node, callbackNodes, nextNodes, bytes, 'wait', values
+    context = testNode node, neededNodes, nextNodes, bytes, 'wait', values
     assert.equal context.index, 1
     assert.equal context.specIndex, 5
 
@@ -155,9 +155,9 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    nextNodes = [int, defaults, special]
+    nextNodes = [ N.int, N.defaults, N.special ]
     bytes = [B.DEFAULTN]
-    context = testNode node, callbackNodes, nextNodes, bytes, 'next', values
+    context = testNode node, neededNodes, nextNodes, bytes, 'next', values
     assert.equal context.index, 1
 
 
@@ -169,8 +169,8 @@ describe 'test special', ->
       spec: spec
       value: null
       popSpec: -> spec
-    nextNodes = [int, defaults, special]
+    nextNodes = [ N.int, N.defaults, N.special ]
     bytes = [B.DEFAULT, B.DEFAULT5, B.DEFAULT, B.DEFAULTN]
-    context = testNode node, callbackNodes, nextNodes, bytes, 'next', values
+    context = testNode node, neededNodes, nextNodes, bytes, 'next', values
     assert.equal context.index, 4
     assert.equal context.specIndex, 7

@@ -2,31 +2,31 @@ assert = require 'assert'
 
 B = require '@endeo/bytes'
 
-objectT = require '../../lib/direct-nodes/objectT.coffee'
+objectT = require '../../lib/complex-nodes/objectT.coffee'
 
-testNode = require '../helpers/direct-node-test.coffee'
+testNode = require '../helpers/complex-node-test.coffee'
 
 describe 'test objectT', ->
 
-  callbackNodes = [
-    start  = {}
-    string = {}
-    key    = {}
-    value  = {}
-    assign = {}
-  ]
+  N = neededNodes =
+    start : {}
+    string: {}
+    key   : {}
+    value : {}
+    assign: {}
+
 
   it 'should wait for bytes', ->
 
     nextNodes = []
-    testNode objectT, callbackNodes, nextNodes, [], 'wait'
+    testNode objectT, neededNodes, nextNodes, [], 'wait'
 
 
   it 'should pop object and consume sub-terminator', ->
 
     value = {}
     nextNodes = []
-    context = testNode objectT, callbackNodes, nextNodes, [
+    context = testNode objectT, neededNodes, nextNodes, [
       B.SUB_TERMINATOR
     ], 'next', object: value
     assert.equal context.object, null
@@ -37,8 +37,8 @@ describe 'test objectT', ->
   it 'should pop object, consume terminator, and "start"', ->
 
     value = {}
-    nextNodes = [ start ]
-    context = testNode objectT, callbackNodes, nextNodes, [
+    nextNodes = [ N.start ]
+    context = testNode objectT, neededNodes, nextNodes, [
       B.TERMINATOR
     ], 'next', object: value
     assert.equal context.object, null
@@ -48,6 +48,6 @@ describe 'test objectT', ->
 
   it 'should queue object nodes', ->
 
-    nextNodes = [ string, key, value, assign ]
-    context = testNode objectT, callbackNodes, nextNodes, [ B.STRING ]
+    nextNodes = [ N.string, N.key, N.value, N.assign ]
+    context = testNode objectT, neededNodes, nextNodes, [ B.STRING ]
     assert.equal context.pushedArray, false

@@ -2,24 +2,23 @@ assert = require 'assert'
 
 B = require '@endeo/bytes'
 
-stringT = require '../../lib/direct-nodes/stringT.coffee'
+stringT = require '../../lib/complex-nodes/stringT.coffee'
 
-testNode = require '../helpers/direct-node-test.coffee'
+testNode = require '../helpers/complex-node-test.coffee'
 
-# callback order:  start
 describe 'test stringT', ->
 
-  callbackNodes = [
-    start = {}
-  ]
+  N = neededNodes =
+    start: {}
+
 
   it 'should wait without byte', ->
-    testNode stringT, callbackNodes, [], [], 'wait'
+    testNode stringT, neededNodes, [], [], 'wait'
 
 
   it 'should do next w/out terminator', ->
-    testNode stringT, callbackNodes, [], [B.STRING], 'next'
+    testNode stringT, neededNodes, [], [B.STRING], 'next'
 
 
   it 'should go to start for terminator', ->
-    testNode stringT, callbackNodes, [start], [B.TERMINATOR], 'next'
+    testNode stringT, neededNodes, [N.start], [B.TERMINATOR], 'next'

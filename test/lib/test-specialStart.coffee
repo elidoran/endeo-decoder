@@ -2,22 +2,21 @@ assert = require 'assert'
 
 B = require '@endeo/bytes'
 
-specialStart = require '../../lib/direct-nodes/specialStart.coffee'
+specialStart = require '../../lib/complex-nodes/specialStart.coffee'
 
-testNode = require '../helpers/direct-node-test.coffee'
+testNode = require '../helpers/complex-node-test.coffee'
 
 describe 'test specialStart', ->
 
-  callbackNodes = [
-    special = {}
-  ]
+  N = neededNodes =
+    special: {}
 
   it 'should fail without integer', ->
-    testNode specialStart, callbackNodes, [], [], 'fail'
+    testNode specialStart, neededNodes, [], [], 'fail'
 
 
   it 'should fail without spec', ->
-    testNode specialStart, callbackNodes, [], [], 'fail',
+    testNode specialStart, neededNodes, [], [], 'fail',
       integer: 123
       specials: get: ->
 
@@ -33,6 +32,6 @@ describe 'test specialStart', ->
         get: (id) -> if id is ID then spec
       pushSpec: (s) -> pushedSpec = s
 
-    testNode specialStart, callbackNodes, [special], [], 'next', values
+    testNode specialStart, neededNodes, [N.special], [], 'next', values
 
     assert.equal pushedSpec, spec

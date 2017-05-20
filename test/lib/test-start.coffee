@@ -2,28 +2,25 @@ assert = require 'assert'
 
 B = require '@endeo/bytes'
 
-startNode = require '../../lib/direct-nodes/start.coffee'
+startNode = require '../../lib/complex-nodes/start.coffee'
 
-testNode = require '../helpers/direct-node-test.coffee'
+testNode = require '../helpers/complex-node-test.coffee'
 
-# callback order:
-#   start value generic special array push string int stringT key assign
-#
 describe 'test start', ->
 
-  callbackNodes = [
-    start   = {}
-    value   = {}
-    generic = {}
-    special = {}
-    array   = {}
-    push    = {}
-    string  = {}
-    int     = {}
-    stringT = {}
-    key     = {}
-    assign  = {}
-  ]
+  N = neededNodes =
+    start  : {}
+    value  : {}
+    generic: {}
+    special: {}
+    array  : {}
+    push   : {}
+    string : {}
+    int    : {}
+    stringT: {}
+    key    : {}
+    assign : {}
+
 
   for id in [ 0, 1, (B.SPECIAL - 1) ]
 
@@ -31,33 +28,33 @@ describe 'test start', ->
 
       it 'should handle special object id ' + id, ->
 
-        nextNodes = [ special ]
-        context = testNode startNode, callbackNodes, nextNodes, [ id ]
+        nextNodes = [ N.specialStart ]
+        context = testNode startNode, neededNodes, nextNodes, [ id ]
         assert.equal context.integer, id
 
 
   it 'should handle special marker', ->
 
-    nextNodes = [ int, special ]
-    testNode startNode, callbackNodes, nextNodes, [ B.SPECIAL ]
+    nextNodes = [ N.int, N.specialStart ]
+    testNode startNode, neededNodes, nextNodes, [ B.SPECIAL ]
 
 
   it 'should handle object marker', ->
 
-    nextNodes = [ generic ]
-    testNode startNode, callbackNodes, nextNodes, [ B.OBJECT ]
+    nextNodes = [ N.generic ]
+    testNode startNode, neededNodes, nextNodes, [ B.OBJECT ]
 
 
   it 'should handle array marker', ->
 
-    nextNodes = [ array ]
-    testNode startNode, callbackNodes, nextNodes, [ B.ARRAY ]
+    nextNodes = [ N.array ]
+    testNode startNode, neededNodes, nextNodes, [ B.ARRAY ]
 
 
   it 'should handle string marker', ->
 
-    nextNodes = [ string, stringT ]
-    testNode startNode, callbackNodes, nextNodes, [ B.STRING ]
+    nextNodes = [ N.string, N.stringT ]
+    testNode startNode, neededNodes, nextNodes, [ B.STRING ]
 
 
   it 'should wait', ->
@@ -81,23 +78,23 @@ describe 'test start', ->
   it 'should make empty object for OgTs', ->
 
     nextNodes = []
-    context = testNode startNode, callbackNodes, nextNodes, [
+    context = testNode startNode, neededNodes, nextNodes, [
       B.OBJECT, B.SUB_TERMINATOR
     ]
     assert.deepEqual context.value, {}
 
   it 'should make empty object for OgT', ->
 
-    nextNodes = [ start ]
-    context = testNode startNode, callbackNodes, nextNodes, [
+    nextNodes = [ N.start ]
+    context = testNode startNode, neededNodes, nextNodes, [
       B.OBJECT, B.TERMINATOR
     ]
     assert.deepEqual context.value, {}
 
   it 'should push object and queue object nodes', ->
 
-    nextNodes = [ string, key, value, assign ]
-    context = testNode startNode, callbackNodes, nextNodes, [
+    nextNodes = [ N.string, N.key, N.value, N.assign ]
+    context = testNode startNode, neededNodes, nextNodes, [
       B.OBJECT, B.STRING
     ]
     assert context.pushedObject
@@ -106,23 +103,23 @@ describe 'test start', ->
   it 'should make empty array for ATs', ->
 
     nextNodes = []
-    context = testNode startNode, callbackNodes, nextNodes, [
+    context = testNode startNode, neededNodes, nextNodes, [
       B.ARRAY, B.SUB_TERMINATOR
     ]
     assert.deepEqual context.value, []
 
   it 'should make empty object for AT', ->
 
-    nextNodes = [ start ]
-    context = testNode startNode, callbackNodes, nextNodes, [
+    nextNodes = [ N.start ]
+    context = testNode startNode, neededNodes, nextNodes, [
       B.ARRAY, B.TERMINATOR
     ]
     assert.deepEqual context.value, []
 
   it 'should push array and queue array nodes', ->
 
-    nextNodes = [ value, push ]
-    context = testNode startNode, callbackNodes, nextNodes, [
+    nextNodes = [ N.value, N.push ]
+    context = testNode startNode, neededNodes, nextNodes, [
       B.ARRAY, B.STRING
     ]
     assert context.pushedArray
