@@ -3,7 +3,7 @@ B = require '@endeo/bytes'
 
 module.exports = (node, sign, bytes, control) ->
 
-  # setup context with input buffer with the desired byte
+  # setup context with input buffer with the desired bytes
   # NOTE: yeah, i'm reimplementing Input's functions...
   context =
     sign  : sign
@@ -23,5 +23,5 @@ module.exports = (node, sign, bytes, control) ->
 
   # run it with context
   node.call context, control
-  
+
   return context
