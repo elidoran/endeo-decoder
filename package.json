@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@endeo/input": "^0.1.0",
-    "stating": "^0.4.0"
+    "stating": "^0.4.1"
   },
   "engines": {
     "node": ">=4"
