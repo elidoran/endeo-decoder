@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "coffeelint -f build/coffeelint.json lib",
     "build": "coffee --bare --compile --no-header lib",
-    "clean": "rm -f lib/*.js && rm -f lib/nodes/*.js && rm -f lib/direct-nodes/*.js",
+    "clean": "rm -f lib/*.js && rm -f lib/nodes/*.js && rm -f lib/complex-nodes/*.js",
     "prepublish": "npm run build",
     "postpublish": "npm run clean",
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec --bail --check-leaks test/lib",
