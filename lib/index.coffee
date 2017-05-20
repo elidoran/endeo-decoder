@@ -3,7 +3,7 @@ context = require './context'
 states = require('stating')()
 
 states.addAll require './nodes'
-states.addAll require('./direct-nodes'), true
+states.addAll require('./complex-nodes'), true
 states.start 'start'
 
 # export a function which creates a new decoder
