@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "coffeelint -f build/coffeelint.json lib",
-    "build": "coffee --bare --compile lib",
+    "build": "coffee --bare --compile --no-header lib",
     "clean": "rm -f lib/*.js && rm -f lib/nodes/*.js && rm -f lib/direct-nodes/*.js",
     "prepublish": "npm run build",
     "postpublish": "npm run clean",
@@ -25,10 +25,8 @@
     "test-all": "npm run test4 && npm run test6 && npm run test7",
     "precoverage": "npm run clean",
     "coverage": "istanbul cover -x 'build/**' _mocha -- --compilers coffee:coffee-script/register --require ./build/coverage.js -R spec test/lib",
-    "publish-coverage": "npm run coverage && cat coverage/lcov.info | coveralls",
     "precoverage-lcov": "npm run clean",
-    "coverage-lcov": "istanbul cover -x 'build/**' _mocha --report lcovonly -- --compilers coffee:coffee-script/register --require ./build/coverage.js -R spec test/lib",
-    "coverage-clean": "rm -rf ./coverage"
+    "coverage-lcov": "istanbul cover -x 'build/**' _mocha --report lcovonly -- --compilers coffee:coffee-script/register --require ./build/coverage.js -R spec test/lib"
   },
   "repository": {
     "type": "git",
@@ -49,7 +47,7 @@
   },
   "dependencies": {
     "@endeo/input": "^0.1.0",
-    "stating": "^0.3.0"
+    "stating": "^0.4.0"
   },
   "engines": {
     "node": ">=4"
