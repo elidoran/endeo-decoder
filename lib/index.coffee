@@ -5,7 +5,6 @@ states = require('stating')()
 states.addAll require './nodes'
 states.addAll require('./direct-nodes'), true
 states.start 'start'
-states.direct()
 
 # export a function which creates a new decoder
 module.exports = (options) ->

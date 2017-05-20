@@ -1,39 +1,27 @@
-# direct node 'array'
-module.exports = (direct) ->
+# node 'array'
+module.exports = (control, N) ->
 
-  # make vars for the later function to close over
-  start = value = push = null
+  if @hasByte()
 
-  # register request to get their actual values later
-  direct ['start', 'value', 'push'], (s, v, p) ->
-    start = s
-    value = v
-    push  = p
+    switch @peek()
 
-  # build the real node function as a closure
-  (control) ->
+      # this inner object is done so move to the next thing
+      when @B.SUB_TERMINATOR
+        @eat()
+        @value = []
+        control.next()
 
-    if @hasByte()
+      # whole chunk is done now, go back to 'start'
+      when @B.TERMINATOR
+        @eat()
+        @value = []
+        control.next N.start
 
-      switch @peek()
+      # there's more key/value pairs for the object
+      else
+        # create a new object scope (push current object and key onto a stack)
+        @pushArray()
+        control.next N.value, N.push
 
-        # this inner object is done so move to the next thing
-        when @B.SUB_TERMINATOR
-          @eat()
-          @value = []
-          control.next()
-
-        # whole chunk is done now, go back to 'start'
-        when @B.TERMINATOR
-          @eat()
-          @value = []
-          control.next start
-
-        # there's more key/value pairs for the object
-        else
-          # create a new object scope (push current object and key onto a stack)
-          @pushArray()
-          control.next value, push
-
-    # wait for another byte
-    else control.wait 'wait in array'
+  # wait for another byte
+  else control.wait 'wait in array'

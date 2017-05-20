@@ -1,17 +1,5 @@
-# direct 'arrayT' node
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = value = push = null
-
-  # register request to get their actual values later
-  direct ['start', 'value', 'push'], (s, v, p) ->
-    start = s
-    value = v
-    push  = p
-
-  # build the real node function as a closure
-  (control) ->
+# 'arrayT' node
+module.exports = (control, N) ->
 
     if @hasByte()
 
@@ -29,10 +17,10 @@ module.exports = (direct) ->
           @eat()
           @value = @array
           @popArray()
-          control.next start
+          control.next N.start
 
         # there's more value elements for the array
-        else control.next value, push
+        else control.next N.value, N.push
 
     # wait for another byte
     else control.wait 'wait in arrayT'

@@ -1,19 +1,5 @@
-# direct 'objectT' node
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = string = key = value = assign = null
-
-  # register request to get their actual values later
-  direct ['start', 'string', 'key', 'value', 'assign'], (s1, s2, k, v, a) ->
-    start  = s1
-    string = s2
-    key    = k
-    value  = v
-    assign = a
-
-  # build the real node function as a closure
-  (control) ->
+# 'objectT' node
+module.exports = (control, N) ->
 
     if @hasByte()
 
@@ -31,10 +17,10 @@ module.exports = (direct) ->
           @eat()
           @value = @object
           @popObject()
-          control.next start
+          control.next N.start
 
         # there's more key/value pairs for the object
-        else control.next string, key, value, assign
+        else control.next N.string, N.key, N.value, N.assign
 
     # wait for another byte
     else control.wait 'wait in objectT'

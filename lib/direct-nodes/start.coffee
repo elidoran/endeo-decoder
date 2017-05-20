@@ -1,29 +1,5 @@
-# direct node 'start'
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = value = generic = specialStart = array = push = string = null
-  int = stringT = key = assign = null
-
-  # register request to get their actual values later
-  direct [
-    'start', 'value', 'generic', 'specialStart', 'array', 'push', 'string'
-    'int', 'stringT', 'key', 'assign'
-  ], (s, v, og, sp, a, p, st, i, t, k, an) ->
-    start   = s
-    value   = v
-    generic = og
-    specialStart = sp
-    array   = a
-    push    = p
-    string  = st
-    int     = i
-    stringT = t
-    key     = k
-    assign  = an
-
-  # build the real node function as a closure
-  (control) ->
+# node 'start'
+module.exports = (control, N) ->
 
     # if we're coming back here after decoding a value then use it
     if @value?
@@ -45,52 +21,64 @@ module.exports = (direct) ->
     if byte < @B.SPECIAL         # 0 < B.SPECIAL are ID's
       # TODO: could get the "spec" here and then go to 'special' ...
       @integer = byte            # remember the id
-      control.next specialStart  # go direct to the special handler
+      control.next N.specialStart  # go direct to the special handler
 
     # now check exact matches
     else switch byte
 
       # then it's an extended ID, 'int' gets the ID, then on to `special`
       # TODO: could get the "spec" here and then go to 'special' ...
-      when @B.SPECIAL then control.next int, specialStart
+      when @B.SPECIAL then control.next N.int, N.specialStart
 
       # try to do the work now if we have the bytes, otherwise, use nodes
       when @B.OBJECT
+
         if @hasByte()
+
           switch @peek()
+
             when @B.SUB_TERMINATOR
               @eat()
               @value = {}
               control.next()
+
             when @B.TERMINATOR
               @eat()
               @value = {}
-              control.next start
+              control.next N.start
+
             else
               @pushObject()
-              control.next string, key, value, assign
-        else control.next generic
+              control.next N.string, N.key, N.value, N.assign
+
+        else control.next N.generic
 
       # try to do the work now if we have the bytes, otherwise, use nodes
       when @B.ARRAY
+
         if @hasByte()
+
           switch @peek()
+
             when @B.SUB_TERMINATOR
               @eat()
               @value = []
               control.next()
+
             when @B.TERMINATOR
               @eat()
               @value = []
-              control.next start
+              control.next N.start
+
             else
               @pushArray()
-              control.next value, push
-        else control.next array
+              control.next N.value, N.push
+
+        else control.next N.array
 
 
       # we know length of all string styles so no TERMINATOR is required
       # unless the string is empty, so, look for it.
-      when @B.STRING then control.next string, stringT
+      when @B.STRING then control.next N.string, N.stringT
 
       else control.fail 'invalid indicator byte', byte: byte

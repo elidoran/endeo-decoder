@@ -1,10 +1,5 @@
-# direct node 'stringT'
-module.exports = (direct) ->
-
-  start = null
-  direct ['start'], (s) -> start = s
-
-  (control) ->
+# node 'stringT'
+module.exports = (control, N) ->
 
     if @hasByte()
 
@@ -14,7 +9,7 @@ module.exports = (direct) ->
       if @peek() is @B.TERMINATOR
         @eat()         # consume the TERMINATOR byte
         @value ?= ''   # empty string if we didn't decode one
-        control.next start # after a TERMINATOR always go to 'start'
+        control.next N.start # after a TERMINATOR always go to 'start'
 
       else control.next()
 

@@ -1,10 +1,5 @@
-# direct node 'specialT'
-module.exports = (direct) ->
-
-  start = null
-  direct ['start'], (s) -> start = s
-
-  (control) ->
+# node 'specialT'
+module.exports = (control, N) ->
 
     if @hasByte()
 
@@ -12,7 +7,7 @@ module.exports = (direct) ->
 
         when @B.SUB_TERMINATOR then control.next()
 
-        when @B.TERMINATOR then control.next start
+        when @B.TERMINATOR then control.next N.start
 
         else
           @back()

@@ -1,27 +1,10 @@
-# direct node 'special'
+# node 'special'
 # this node is responsible for:
 #  1. "loop" which reads values for object
 #  2. assign values into object
 #  3. try to consume terminator, else go to specialT
 #  4. try to skip default values, else go to specialDefaults
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = value = int = special = defaults = specialT = null
-
-  # register request to get their actual values later
-  direct [
-    'start', 'value', 'int', 'special', 'specialDefaults', 'specialT'
-  ], (s, v, i, sp, sd, m) ->
-    start = s
-    value = v
-    int = i
-    special = sp
-    defaults = sd
-    specialT = m
-
-  # build the real node function as a closure
-  (control) ->
+module.exports = (control, N) ->
 
     keyInfo = @spec.array[@specIndex]
 
@@ -40,12 +23,12 @@ module.exports = (direct) ->
 
         when @B.SUB_TERMINATOR then control.next()
 
-        when @B.TERMINATOR then control.next start
+        when @B.TERMINATOR then control.next N.start
 
         else @back() ; control.fail 'special requires terminator'
 
       # wait for a byte to check for the TERMINATOR
-      else control.next specialT
+      else control.next N.specialT
 
     # loop as long as we both have bytes to check and they're defaults.
     else
@@ -66,7 +49,7 @@ module.exports = (direct) ->
 
           when @B.DEFAULTN
             @eat()
-            return control.next int, defaults, special
+            return control.next N.int, N.defaults, N.special
 
           # otherwise, get value() and then come back here.
           else
@@ -74,7 +57,7 @@ module.exports = (direct) ->
             # NOTE:
             #  the "decoderNode" thing in @endeo/specials is not the most
             #  ideal solution, but, for now, it works.
-            return control.next keyInfo.decoderNode ? value, special
+            return control.next keyInfo.decoderNode ? N.value, N.special
 
       # wait for a byte so we can handle defaults or move on to 'value'
       control.wait 'wait in special defaults'

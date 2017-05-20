@@ -1,22 +1,5 @@
-# direct 'assign' node
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = string = key = value = assign = objectT = null
-
-  # register request to get their actual values later
-  direct [
-    'start', 'string', 'key', 'value', 'assign', 'objectT'
-  ], (s, st, k, v, a, o) ->
-    start  = s
-    string = st
-    key    = k
-    value  = v
-    assign = a
-    objectT = o
-
-  # build the real node function as a closure
-  (control) ->
+# 'assign' node
+module.exports = (control, N) ->
 
     # assign value into object at key
     if @key?
@@ -47,13 +30,13 @@ module.exports = (direct) ->
                 @value = @object
                 # shouldn't need to pop...but, it nulls it out, too.
                 @popObject()
-                control.next start
+                control.next N.start
 
               # there's more key/value pairs for the object
-              else control.next string, key, value, assign
+              else control.next N.string, N.key, N.value, N.assign
 
           # go there and wait for another byte
-          else control.next objectT
+          else control.next N.objectT
 
         else control.fail 'missing object to assign key/value into'
 

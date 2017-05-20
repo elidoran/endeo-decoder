@@ -1,18 +1,5 @@
-# direct 'push' node
-module.exports = (direct) ->
-
-  # make vars for the later function to close over
-  start = value = push = arrayT = null
-
-  # register request to get their actual values later
-  direct ['start', 'value', 'push', 'arrayT'], (s, v, p, a) ->
-    start  = s
-    value  = v
-    push   = p
-    arrayT = a
-
-  # build the real node function as a closure
-  (control) ->
+# 'push' node
+module.exports = (control, N) ->
 
     # assign value into object at key
     if @value?
@@ -39,13 +26,13 @@ module.exports = (direct) ->
               @eat()
               @value = @array
               @popArray()
-              control.next start
+              control.next N.start
 
             # there's more value elements for the array
-            else control.next value, push
+            else control.next N.value, N.push
 
         # go there and wait for another byte
-        else control.next arrayT
+        else control.next N.arrayT
 
       else control.fail 'missing array to add value to'
 
