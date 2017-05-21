@@ -18,18 +18,19 @@ describe 'test specialStart', ->
   it 'should fail without spec', ->
     testNode specialStart, neededNodes, [], [], 'fail',
       integer: 123
-      specials: get: ->
+      specs: []
 
 
   it 'should get/push spec and move to special', ->
     ID = 123
+    specs = []
     object = some:'object'
     spec = some:'spec', creator: -> object
+    specs[ID] = spec
     pushedSpec = null
     values =
       integer: ID
-      specials:
-        get: (id) -> if id is ID then spec
+      specs: specs
       pushSpec: (s) -> pushedSpec = s
 
     testNode specialStart, neededNodes, [N.special], [], 'next', values

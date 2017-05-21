@@ -23,7 +23,7 @@ describe 'test context', ->
 
 
   for name in [
-    'B', 'buffer', 'index', 'integer', 'unstring', 'specials'
+    'B', 'buffer', 'index', 'integer', 'unstring', 'specs'
   ]
     do (name) ->
 
@@ -128,16 +128,16 @@ describe 'test context', ->
     assert.equal context.unstring, unstring
 
 
-  it 'should use specified specials (as option)', ->
+  it 'should use specified specs (as option)', ->
 
-    context = build specials: specials = custom:true
-    assert.equal context.specials, specials
+    context = build specs: specs = []
+    assert.equal context.specs, specs
 
 
-  it 'should use specified specials (in props)', ->
+  it 'should use specified specs (in props)', ->
 
-    context = build props: specials: value: specials = custom:true
-    assert.equal context.specials, specials
+    context = build props: specs: value: specs = []
+    assert.equal context.specs, specs
 
 
   it 'should assign spec in pushSpec()', ->

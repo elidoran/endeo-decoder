@@ -114,8 +114,7 @@ describe 'test decoder', ->
 
     decoder = buildDecoder
       context:
-        specials:
-          get: (id) -> if id is 1 then spec
+        specs: [null, spec]
 
     answer =
       one: 1
