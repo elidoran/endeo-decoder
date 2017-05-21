@@ -106,10 +106,9 @@ module.exports = (options) ->
     value = options?.unstring ? require('unstring') options?.unstringOptions
     custom.unstring = prop value, false
 
-  unless options?.props?.specials?
-    types = options?.types
-    value = options?.specials ? require('@endeo/specials') {types}
-    custom.specials = prop value, false
+  unless options?.props?.specs?
+    value = options?.specs ? []
+    custom.specs = prop value, false
 
 
   # new object, our props, ensure `B` for bytes is supplied, then their props

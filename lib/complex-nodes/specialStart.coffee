@@ -10,7 +10,7 @@ module.exports = (control, N) ->
     if @integer?
 
       # get the "object spec"
-      spec = @specials.get @integer
+      spec = @specs[@integer]
 
       if spec? # setup processing this special
 
